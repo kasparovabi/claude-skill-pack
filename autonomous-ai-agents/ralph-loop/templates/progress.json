@@ -1,0 +1,10 @@
+{
+  "iter_count": 0,
+  "phase": "exploration",
+  "last_hypothesis_id": null,
+  "last_metrics": null,
+  "target_progress": null,
+  "best_iter": null,
+  "consecutive_validation_windows_passed": 0,
+  "last_updated": null
+}

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--
+   AYARLA (istege bagli imza/atif): kurum istegine gore bir ASCII art + slogan
+   yorumu buraya konabilir. Kullaniciya gorunmez, sadece kodu acan gorur.
+   Ornek: kullanici "sanimiz kodda yursun" derse:
+     - ust yorum (ASCII art + slogan)
+     - <meta name="author" content="...">
+     - asagidaki styled console.log
+   Bunlar islevi BOZMAZ, kurumsal gorunumu etkilemez.
+-->
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<!-- AYARLA (istege bagli): <meta name="author" content="..."> -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><!-- KURUM --> — E-posta İmzası Oluşturucu</title>
+<!-- AYARLA: LOGO relative (img/logo.png), SOCIAL sabitler, KURUM adı, renk değişkenleri -->
+<style>
+  :root {
+    --gold: #8c704d;   /* AYARLA: kurumun birincil rengi */
+    --dark: #3c3935;   /* AYARLA: ikincil/metin rengi */
+    --bg: #f7f5f2; --white: #ffffff; --border: #e2ddd8;
+    --gold-light: #f5efe8; --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: var(--bg); color: var(--dark); min-height: 100vh; }
+  header { background: var(--dark); padding: 18px 32px; display: flex; align-items: center; gap: 16px; }
+  header img { height: 40px; }
+  header h1 { color: var(--gold); font-size: 15px; font-weight: 600; letter-spacing: 0.5px; line-height: 1.4; }
+  header h1 span { display: block; color: #aaa; font-size: 12px; font-weight: 400; }
+  main { max-width: 1100px; margin: 32px auto; padding: 0 24px;
+    display: grid; grid-template-columns: 380px 1fr; gap: 28px; align-items: start; }
+  .card { background: var(--white); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 24px; }
+  .card-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--dark);
+    margin-bottom: 5px; margin-top: 14px; }
+  label span { color: #999; font-weight: 400; }
+  input[type=text] { width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 13px; color: var(--dark); background: var(--bg);
+    outline: none; transition: border-color 0.15s; }
+  input[type=text]:focus { border-color: var(--gold); background: #fff; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .preview-box { background: #fff; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 28px 24px; }
+  .preview-label { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  #preview-render { min-height: 100px; padding: 8px 0 4px; }
+  .copy-wrap { margin-top: 24px; display: flex; gap: 10px; flex-direction: column; }
+  .btn-copy { background: var(--gold); color: #fff; border: none; padding: 12px 20px;
+    border-radius: 7px; font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: background 0.15s, transform 0.1s; }
+  .btn-copy:hover { background: #7a6040; }
+  .btn-copy:active { transform: scale(0.98); }
+  .btn-copy.copied { background: #4a7c4a; }
+  .instructions { font-size: 12px; color: #888; line-height: 1.6;
+    background: var(--gold-light); border-radius: 6px; padding: 12px 14px; }
+  .instructions b { color: var(--gold); }
+  .social-note { font-size: 11px; color: #aaa; margin-top: 20px; padding-top: 16px;
+    border-top: 1px solid var(--border); line-height: 1.5; }
+  @media (max-width: 780px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- LOGO relative path: site hangi domaine taşınırsa orada çalışır -->
+  <img src="img/logo.png" alt="Kurum" />
+  <h1>E-posta İmzası Oluşturucu<span><!-- KURUM → Birim adı --></span></h1>
+</header>
+
+<main>
+  <div class="card">
+    <div class="card-title">Bilgilerinizi Girin</div>
+    <label>Unvan / Görev Etiketi <span>(büyük/küçük harf önemli)</span></label>
+    <input type="text" id="f_unvan" placeholder="ör: UZMAN" value="UZMAN" oninput="render()">
+    <div class="row2">
+      <div>
+        <label>Ad</label>
+        <input type="text" id="f_ad" placeholder="Ahmet" value="Ahmet" oninput="render()">
+      </div>
+      <div>
+        <label>Soyad <span>(BÜYÜK)</span></label>
+        <input type="text" id="f_soyad" placeholder="YILMAZ" value="YILMAZ" oninput="render()">
+      </div>
+    </div>
+    <label>Birim / Daire</label>
+    <input type="text" id="f_birim" placeholder="Daire Başkanlığı" value="Daire Başkanlığı" oninput="render()">
+    <label>Telefon</label>
+    <input type="text" id="f_tel" placeholder="+90 212 000 0000" value="+90 212 000 0000" oninput="render()">
+    <label>Dahili <span>(boş bırakabilirsiniz)</span></label>
+    <input type="text" id="f_dahili" placeholder="" oninput="render()">
+    <!-- Web sitesi SABİT: readonly + render() yok (kullanıcı değiştiremez) -->
+    <label>Web sitesi <span>(sabit)</span></label>
+    <input type="text" id="f_site" value="kurum.org" readonly style="background:#ece8e3;color:#999;cursor:not-allowed;">
+    <div class="social-note">Logo ve sosyal medya hesapları kurumsal olarak sabittir.<br>Değişiklik için Kurumsal İletişim Dairesi ile iletişime geçin.</div>
+  </div>
+
+  <!-- SADECE önizleme + İmzayı Kopyala butonu. HTML-kodu bloğu YOK (çalışan kullanmasın). -->
+  <div>
+    <div class="preview-box">
+      <div class="preview-label">İmza Önizleme</div>
+      <div id="preview-render"></div>
+      <div class="copy-wrap">
+        <button class="btn-copy" id="btn" onclick="copySignature()">📋 İmzayı Kopyala</button>
+        <div class="instructions">
+          <b>Nasıl kullanılır:</b><br>
+          1. Yukarıdaki bilgileri kendinize göre doldurun.<br>
+          2. <b>İmzayı Kopyala</b> butonuna basın.<br>
+          3. Outlook'ta <b>Dosya → Seçenekler → Posta → İmzalar → Yeni</b> deyin, imza kutusuna <b>Cmd+V</b> (veya Ctrl+V) ile yapıştırın, kaydedin.
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// AYARLA (istege bagli imza): F12 acani karsilayan styled konsol rozeti
+// try { console.log("%c ATIF %c KURUM · İmza ", "background:#8c704d;color:#fff;font-weight:bold;padding:4px 8px;border-radius:4px 0 0 4px;", "background:#3c3935;color:#fff;padding:4px 8px;border-radius:0 4px 4px 0;"); } catch(e){}
+
+// Gorsel adresi sitenin yuklendigi adrese gore MUTLAK URL uretilir.
+// Site hangi domaine/dizine tasinirsa imza otomatik o domainin tam https
+// adresini kullanir (email relative path cozemez). Tek satir, URL duzenlemesi yok.
+const BASE = new URL("img", document.baseURI).href;
+const LOGO_URL = BASE + "/logo.png";
+const SOCIAL = [
+  // [key, ikon_url, platform_link, etiket] — SIRA tasarima gore, vision ile dogrula
+  ["x",        BASE+"/x.png",        "https://x.com/HANDLE",                   "X"],
+  ["instagram",BASE+"/instagram.png","https://www.instagram.com/HANDLE",       "Instagram"],
+  ["facebook", BASE+"/facebook.png", "https://www.facebook.com/HANDLE",        "Facebook"],
+  ["youtube",  BASE+"/youtube.png",  "https://www.youtube.com/@HANDLE",        "YouTube"],
+  ["linkedin", BASE+"/linkedin.png", "https://www.linkedin.com/company/SLUG",  "LinkedIn"],
+  ["threads",  BASE+"/threads.png",  "https://www.threads.net/@HANDLE",        "Threads"],
+];
+const GOLD = "#8c704d", DARK = "#3c3935"; // AYARLA: kuruma göre renkler
+const LOGO_W = 190, ICON = 22;
+
+function ent(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function buildHTML() {
+  const unvan  = document.getElementById("f_unvan").value.trim();
+  const ad     = document.getElementById("f_ad").value.trim();
+  const soyad  = document.getElementById("f_soyad").value.trim();
+  const birim  = document.getElementById("f_birim").value.trim();
+  const tel    = document.getElementById("f_tel").value.trim();
+  const dahili = document.getElementById("f_dahili").value.trim();
+  const site   = document.getElementById("f_site").value.trim() || "kurum.org";
+  const telFull = dahili ? tel + " - " + dahili : tel;
+  const telHref = "tel:" + telFull.replace(/[^+0-9]/g,"");
+  let iconCells = "";
+  for (const [,img,link,lbl] of SOCIAL) {
+    iconCells += `<td style="padding:0 5px 0 0;"><a href="${link}" title="${ent(lbl)}" style="text-decoration:none;"><img src="${img}" width="${ICON}" height="${ICON}" alt="${ent(lbl)}" style="display:block;border:0;width:${ICON}px;height:${ICON}px;" /></a></td>`;
+  }
+  return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;">
+  <tr>
+    <td valign="middle" style="padding:0 20px 0 0;">
+      <img src="${LOGO_URL}" width="${LOGO_W}" alt="${ent('Kurum')}" style="display:block;border:0;width:${LOGO_W}px;height:auto;" />
+    </td>
+    <td valign="middle" style="border-left:2px solid ${GOLD};padding:2px 0 2px 20px;line-height:1.35;">
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:11px;letter-spacing:2px;color:${GOLD};font-weight:bold;">${ent(unvan)}</div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:22px;color:${GOLD};padding:1px 0 4px 0;">${ent(ad)} <strong>${ent(soyad)}</strong></div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;color:${DARK};padding-bottom:5px;">${ent(birim)}</div>
+      <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:${GOLD};padding-bottom:7px;">
+        <a href="${ent(telHref)}" style="color:${GOLD};text-decoration:none;">${ent(telFull)}</a>
+        <span style="color:${GOLD};">&nbsp;|&nbsp;</span>
+        <a href="https://${ent(site)}" style="color:${GOLD};text-decoration:none;">${ent(site)}</a>
+      </div>
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;"><tr>${iconCells}</tr></table>
+    </td>
+  </tr>
+</table>`;
+}
+function render() {
+  // SADECE önizlemeyi doldur — html-out textarea YOK
+  document.getElementById("preview-render").innerHTML = buildHTML();
+}
+
+// KRİTİK: Outlook'a yapıştırınca imza RENDER OLMALI, ham <table> metni değil.
+// Çalışan TEK yol: önizleme DOM'unu seç + tarayıcının KENDİ native kopyası.
+// HİÇBİR setData/preventDefault/ClipboardItem müdahalesi YAPMA — onlar panoya
+// düz HTML string'i koyar, Outlook bunu "metin" gibi gösterir (CF_HTML zarfı ezilir).
+function copySignature() {
+  const btn = document.getElementById("btn");
+  const el  = document.getElementById("preview-render");
+  const done = () => {
+    btn.textContent = "✅ Kopyalandı! Şimdi Outlook'a yapıştırın";
+    btn.classList.add("copied");
+    setTimeout(() => { btn.textContent = "📋 İmzayı Kopyala"; btn.classList.remove("copied"); }, 3000);
+  };
+  const fail = () => {
+    btn.textContent = "Önizlemeyi elle seçip Cmd+C yapın";
+    setTimeout(() => { btn.textContent = "📋 İmzayı Kopyala"; }, 3500);
+  };
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch (err) { ok = false; }
+  sel.removeAllRanges();
+  if (ok) { done(); } else { fail(); }
+}
+render();
+</script>
+</body>
+</html>

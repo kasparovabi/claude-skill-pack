@@ -1,0 +1,11 @@
+{
+  "_comment": "Map of friendly recipient name -> 1-based slot index in the AirDrop picker (left-to-right). The picker order is stable across days for the same nearby devices; rebuild this file if devices move in/out of range or when devices first appear.",
+  "_how_to_populate": "Run the picker once (~/Library/Hermes/airdrop <any-file>) so the recipient row is visible. Read the names left-to-right off the screen. Add each as \"<name>\": <slot>. Do NOT trust LLM vision alone — Apple hides names in the accessibility tree, and OCR/vision misreads small icon labels (this skill once sent a file to the wrong device because vision misread slot 2 as 'btekin' when it was actually a different device).",
+  "_last_observed_order": [
+    {"slot": 1, "vision_guess": "ASCMAC-BOPRO", "verified_by_user": false},
+    {"slot": 2, "vision_guess": "btekin",        "verified_by_user": false},
+    {"slot": 3, "vision_guess": "mac iMac",      "verified_by_user": false},
+    {"slot": 4, "vision_guess": "Selimhan the client","verified_by_user": false}
+  ],
+  "_last_observed_at": "2026-05-14T12:50:00+03:00"
+}
