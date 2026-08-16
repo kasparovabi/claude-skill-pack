@@ -4,6 +4,9 @@ Procedural knowledge written while doing the work, not while planning it. Every
 skill here came out of a task that went wrong at least once, and the fix is in
 the file.
 
+The deployments these came out of, including what broke and what is still
+running, are in [PRODUCTION-EVIDENCE.md](PRODUCTION-EVIDENCE.md).
+
 These are Markdown skills for [Claude Code](https://claude-code.anthropic.com)
 and compatible agents. Drop a folder into `~/.claude/skills/` (or your agent's
 skill directory) and the agent picks it up.
